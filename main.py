@@ -4,6 +4,7 @@ import os
 from playwright.async_api import async_playwright
 from telethon import TelegramClient
 from telethon.tl.types import MessageEntityUrl
+from telethon.sessions import StringSession
 import requests
 
 # === TELEGRAM SETTINGS ===
@@ -12,6 +13,7 @@ api_hash = os.getenv("TG_API_HASH", "fa03ac53e4eacbf1c845e55bf7de09df")
 group_username = '@getstudyfevers'  # Target Telegram group/channel
 notify_token = os.getenv("TELEGRAM_TOKEN")        # Bot token for sending output
 notify_chat_id = os.getenv("TELEGRAM_CHAT_ID")    # Chat ID to receive output
+session_str = os.getenv("TELETHON_STRING_SESSION")  # String session for Telethon
 
 # === SEEN IDS FILE ===
 SEEN_IDS_FILE = "udemy_seen_ids.json"
@@ -56,7 +58,13 @@ async def extract_udemy_links_from_coursefolder(playwright, coursefolder_links):
 # === TELEGRAM SCRAPER ===
 async def get_coursefolder_links_from_telegram():
     print("📥 Connecting to Telegram...")
-    client = TelegramClient('session_name', api_id, api_hash)
+
+    # Use string session if provided, else fallback to default
+    if session_str:
+        client = TelegramClient(StringSession(session_str), api_id, api_hash)
+    else:
+        client = TelegramClient('session_name', api_id, api_hash)
+
     await client.start()
 
     seen_ids = load_seen_ids()

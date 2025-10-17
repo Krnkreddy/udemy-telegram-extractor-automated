@@ -1,1 +1,7 @@
-
+*.session
+*.session-journal
+__pycache__/
+.env
+udemy_seen_ids.json
+udemy_links.txt
+.DS_Store
