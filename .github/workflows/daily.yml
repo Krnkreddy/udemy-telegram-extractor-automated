@@ -2,7 +2,7 @@ name: Daily Udemy Link Extractor
 
 on:
   schedule:
-    - cron: '0 3 * * *'  # runs daily at 03:00 UTC (~8:30 AM IST)
+    - cron: '0 3 * * *'  # runs at 03:00 UTC (~8:30 AM IST)
   workflow_dispatch:
 
 jobs:
@@ -30,4 +30,5 @@ jobs:
           TG_API_HASH: ${{ secrets.TG_API_HASH }}
           TELEGRAM_TOKEN: ${{ secrets.TELEGRAM_TOKEN }}
           TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+          TELETHON_STRING_SESSION: ${{ secrets.TELETHON_STRING_SESSION }}
         run: python main.py
