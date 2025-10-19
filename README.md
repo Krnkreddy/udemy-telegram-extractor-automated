@@ -1,27 +1,66 @@
-# Udemy Telegram Extractor Automated
+# 📚 Udemy Telegram Course Extractor (Automated)
 
-This project automatically:
-1. Reads Telegram messages from a group/channel.
-2. Extracts Coursefolder links.
-3. Visits each link to extract Udemy course URLs.
-4. Sends the daily list to your Telegram chat using a bot.
+Automates extraction of free Udemy course links from Telegram groups, scraping coursefolder.net pages, and sending results via Telegram bot.
 
-## Setup
+---
 
-1. Add secrets under **Settings → Secrets → Actions**:
-   - `TG_API_ID` — Your Telegram API ID
-   - `TG_API_HASH` — Your Telegram API hash
-   - `TELEGRAM_TOKEN` — Your BotFather bot token
-   - `TELEGRAM_CHAT_ID` — Chat ID to receive messages
-   - `TELETHON_STRING_SESSION` — Your Telethon string session (generated locally)
+## ⚙️ Project Status
 
-2. The workflow runs automatically every day at 08:30 AM IST (03:00 UTC).
+> **Currently On Hold** ⏸️
+> The project is paused but will be resumed later. Contributions and improvements are welcome.
 
-3. You can manually trigger the workflow from the **Actions** tab if needed.
+---
 
-## Run Locally
+## 📂 Folder Structure
 
-```bash
-pip install -r requirements.txt
-playwright install chromium
-python main.py
+```
+udemy-telegram-extractor-automated/
+│
+├── .github/workflows/daily.yml   # GitHub Actions workflow
+├── main.py                       # Main automation script
+├── requirements.txt              # Python dependencies
+├── udemy_seen_ids.json           # Seen Telegram message IDs
+└── udemy_links.txt               # Extracted Udemy course links
+```
+
+---
+
+## 📝 How It Works
+
+1. Connects to a Telegram group/channel using **Telethon**.
+2. Scans messages for `coursefolder.net` links.
+3. Visits each link using **Playwright** and extracts Udemy course URLs.
+4. Sends the extracted links to a Telegram bot.
+5. Keeps track of previously seen Telegram messages to avoid duplicates.
+
+---
+
+## ⚠️ Errors & Troubleshooting
+
+For all common errors, such as JSON issues, CAPTCHA, or Telegram connection problems, please refer to the **Errors section** in this repository.
+
+---
+
+## 🌐 Contributions
+
+* Open to all **developers and contributors**.
+* Feel free to fork, submit pull requests, or suggest improvements.
+* If adding new features, please maintain compatibility with **GitHub Actions workflow**.
+
+---
+
+## 📅 GitHub Actions
+
+* Daily run of the script via `daily.yml`.
+* Automatically extracts new courses and sends notifications to Telegram.
+* Ensures `udemy_seen_ids.json` exists and remains valid.
+
+---
+
+## 🛠️ Tech Stack
+
+* **Python** 3.11
+* **Telethon** — Telegram client
+* **Playwright** — Browser automation
+* **Requests** — Telegram bot notifications
+* **GitHub Actions** — Daily scheduled execution
