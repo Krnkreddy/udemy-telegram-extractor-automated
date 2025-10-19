@@ -3,39 +3,54 @@ import json
 import os
 from playwright.async_api import async_playwright
 from telethon import TelegramClient
-from telethon.tl.types import MessageEntityUrl
 from telethon.sessions import StringSession
+from telethon.tl.types import MessageEntityUrl
 import requests
 
 # === TELEGRAM SETTINGS ===
-api_id = int(os.getenv("TG_API_ID", "26972239"))  # From environment
+api_id = int(os.getenv("TG_API_ID", "26972239"))
 api_hash = os.getenv("TG_API_HASH", "fa03ac53e4eacbf1c845e55bf7de09df")
-group_username = '@getstudyfevers'  # Target Telegram group/channel
-notify_token = os.getenv("TELEGRAM_TOKEN")        # Bot token for sending output
-notify_chat_id = os.getenv("TELEGRAM_CHAT_ID")    # Chat ID to receive output
-session_str = os.getenv("TELETHON_STRING_SESSION")  # String session for Telethon
+group_username = '@getstudyfevers'
+
+notify_token = os.getenv("TELEGRAM_TOKEN")
+notify_chat_id = os.getenv("TELEGRAM_CHAT_ID")
+session_str = os.getenv("TELETHON_STRING_SESSION")
 
 # === SEEN IDS FILE ===
 SEEN_IDS_FILE = "udemy_seen_ids.json"
 
 def load_seen_ids():
-    if os.path.exists(SEEN_IDS_FILE): 
-        with open(SEEN_IDS_FILE, 'r') as f:
-            return set(json.load(f))
-    return set()
+    """Safely load seen message IDs from file."""
+    if not os.path.exists(SEEN_IDS_FILE):
+        return set()
+    try:
+        with open(SEEN_IDS_FILE, "r") as f:
+            data = f.read().strip()
+            if not data:
+                return set()
+            return set(json.loads(data))
+    except (json.JSONDecodeError, ValueError):
+        print("⚠️ Corrupted udemy_seen_ids.json — resetting file.")
+        return set()
+    except Exception as e:
+        print(f"⚠️ Could not load seen IDs: {e}")
+        return set()
 
 def save_seen_ids(seen_ids):
-    with open(SEEN_IDS_FILE, 'w') as f:
-        json.dump(list(seen_ids), f)
+    """Save seen message IDs safely."""
+    try:
+        with open(SEEN_IDS_FILE, "w") as f:
+            json.dump(list(seen_ids), f)
+    except Exception as e:
+        print(f"⚠️ Failed to save seen IDs: {e}")
 
 # === UDEMY LINK EXTRACTOR ===
 async def extract_udemy_links_from_coursefolder(playwright, coursefolder_links):
-    browser = await playwright.chromium.launch(headless=True)   
+    browser = await playwright.chromium.launch(headless=True)
     context = await browser.new_context()
     page = await context.new_page()
 
     udemy_links = []
-
     for link in coursefolder_links:
         print(f"🌐 Visiting: {link}")
         try:
@@ -58,12 +73,10 @@ async def extract_udemy_links_from_coursefolder(playwright, coursefolder_links):
 # === TELEGRAM SCRAPER ===
 async def get_coursefolder_links_from_telegram():
     print("📥 Connecting to Telegram...")
-
-    # Use string session if provided, else fallback to default
     if session_str:
         client = TelegramClient(StringSession(session_str), api_id, api_hash)
     else:
-        client = TelegramClient('session_name', api_id, api_hash)
+        client = TelegramClient("session_name", api_id, api_hash)
 
     await client.start()
 
@@ -126,12 +139,12 @@ async def main():
         message = "\n".join(udemy_links)
         print(message)
 
-        # Save to file for reference
+        # Save to file
         with open("udemy_links.txt", "w", encoding="utf-8") as f:
             for url in udemy_links:
                 f.write(url + "\n")
 
-        # Send message via Telegram bot
+        # Send via Telegram bot
         send_telegram_message(f"🎓 **Today's Udemy Courses** 🎓\n\n{message}")
 
 if __name__ == "__main__":
