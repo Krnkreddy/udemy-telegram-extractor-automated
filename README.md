@@ -64,3 +64,19 @@ For all common errors, such as JSON issues, CAPTCHA, or Telegram connection prob
 * **Playwright** — Browser automation
 * **Requests** — Telegram bot notifications
 * **GitHub Actions** — Daily scheduled execution
+
+---
+
+## Contact
+
+**K Ranga Nitheesh Kumar Reddy**
+
+* Email: [k.r.nitheeshkumarreddy@gmail.com](mailto:k.r.nitheeshkumarreddy@gmail.com)
+* LinkedIn: [linkedin.com/in/KrnkReddy](https://www.linkedin.com/in/krnkreddy/)
+* GitHub: [github.com/Krnkreddy](https://github.com/Krnkreddy)
+
+---
+
+## 📄 License
+
+This project is licensed under the **MIT License**. See [LICENSE](LICENSE) for details.
